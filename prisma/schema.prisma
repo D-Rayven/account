@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  firstName   String
+  lastName    String
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt @default(now())
+  UserAccount UserAccount[]
+  Operations  Operations[]
+}
+
+model Account {
+  id          Int           @id @default(autoincrement())
+  label       String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt @default(now())
+  color       String        @default("#000000")
+  UserAccount UserAccount[]
+  Operations  Operations[]
+}
+
+model UserAccount {
+  id        Int     @id @default(autoincrement())
+  user      Member    @relation(fields: [userId], references: [id])
+  userId    Int
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId Int
+}
+
+model Operations {
+  id        Int                  @id @default(autoincrement())
+  label     String
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt @default(now())
+  amount    Float
+  date      DateTime
+  typeOf    TypeOperations
+  status    TypeOperationsStatus @default(PENDING)
+  reccurent Boolean              @default(false)
+  endDate   DateTime?
+  user      Member                 @relation(fields: [userId], references: [id])
+  userId    Int
+  account   Account              @relation(fields: [accountId], references: [id])
+  accountId Int
+}
+
+enum TypeOperations {
+  DEBIT
+  CREDIT
+}
+
+enum TypeOperationsStatus {
+  PENDING
+  DONE
+}

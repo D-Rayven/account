@@ -1,34 +1,92 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Gestion bancaire
 
-## Getting Started
+## Objectifs
 
-First, run the development server:
+- Ajouter / Retirer des opérations
+- Ajouter opérations réccurentes (qui se répète à la date X de chaque mois)
+- Pouvoir créer des catégories de dépenses et ajouter la catégorie à une opération
+- Calculer solde à chaque opération
+- Connexion d'un utilisateur à un solde
 
-```bash
-npm run dev
-# or
-yarn dev
+## Schéma d'architecture
+
+```plantuml
+@startuml
+
+rectangle "Gestion de comptes" as app {
+    rectangle "API" {
+        [API] --> [BDD (Oracle)]
+        [API] --> [Swagger] : " /docs"
+        [API] --> [Passport] : " /auth"
+    }
+    rectangle "UI" {
+        [UI] --> [API] : " /api"
+    }
+}
+    app ---> [GitHub]
+    [GitHub] -> [Vercel] : "deployment"
+
+@enduml
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure de données
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```plantuml
+@startuml
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+enum "TypeOperations" as typeoperations {
+    + depense
+    + gain
+}
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+enum "TypeOperationsStatus" as typeoperationsstatus {
+    + done
+    + pending
+}
 
-## Learn More
+class "User" as user {
+    + id: uuid
+    + last_name: string
+    + first_name: string
+    + mail: email
+    + password: password
+    + created_at: datetime
+    + updated_at: datetime
+}
 
-To learn more about Next.js, take a look at the following resources:
+class "Operations" as operations {
+    + id: uuid
+    + amount: float
+    + date: datetime
+    + created_at: datetime
+    + updated_at: datetime
+    + type_of: TypeOperations
+    + status: TypeOperationsStatus
+    + account: uuid
+    + label: string
+    + reccurent: boolean
+    + end_date?: datetime
+    + user: uuid
+}
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+class "Account" as account {
+    + id: uuid
+    + label: string
+    + created_at: datetime
+    + updated_at: datetime
+    + color: hex
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+class "UserAccount" as useraccount {
+    + account: uuid
+    + user: uuid
+}
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+account <-- operations: " account"
+user <- operations: " user"
+typeoperations <-- operations
+typeoperationsstatus <-- operations
+account <--- useraccount: "account"
+user <--- useraccount: "user"
+@enduml
+```
