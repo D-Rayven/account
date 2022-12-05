@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 export const memberHelper = {
     getById,
+    getByEmail,
     getMembers,
     createMember,
     deleteMember,
@@ -13,6 +14,14 @@ async function getById(id: number) {
     return prisma.member.findUnique({
         where: {
             id: id,
+        }
+    });
+}
+
+async function getByEmail(email: string) {
+    return prisma.member.findUnique({
+        where: {
+            email: email,
         }
     });
 }

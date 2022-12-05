@@ -1,16 +1,9 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import { PrismaClient } from '@prisma/client';
+import React from "react";
 
-const prisma = new PrismaClient();
-
-async function main() {
-  const members = await prisma.member.findMany();
-  console.log(members);
+export default function Login() {
+  return (
+    <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
+      <p>Test</p>
+    </div>
+  );
 }
-
-main()
-  .catch((e) => console.error(e))
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
