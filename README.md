@@ -72,21 +72,21 @@ class "Operations" as operations {
 class "Account" as account {
     + id: uuid
     + label: string
-    + created_at: datetime
-    + updated_at: datetime
+    + createdAt: datetime
+    + updatedAt: datetime
     + color: hex
 }
 
 class "MemberAccount" as memberaccount {
-    + account: uuid
-    + member: uuid
+    + memberId: uuid
+    + accountId: uuid
 }
 
-account <-- operations: " account"
-member <- operations: " member"
+account <-- operations: " accountId"
+member <- operations: " memberId"
 typeoperations <-- operations
 typeoperationsstatus <-- operations
-account <--- memberaccount: "account"
-member <--- memberaccount: "member"
+account <--- memberaccount: "accountId"
+member <--- memberaccount: "memberId"
 @enduml
 ```
