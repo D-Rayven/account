@@ -6,6 +6,7 @@ export const memberHelper = {
     getById,
     getMembers,
     createMember,
+    deleteMember,
 }
 
 async function getById(id: number) {
@@ -22,7 +23,7 @@ async function getMembers() {
 
 async function createMember(email: string, firstName: string, lastName: string, password: string) {
     try {
-        const member = prisma.member.create({
+        return prisma.member.create({
             data: {
                 email: email,
                 firstName: firstName,
@@ -30,7 +31,18 @@ async function createMember(email: string, firstName: string, lastName: string, 
                 password: password,
             }
         });
-        return member;
+    } catch(e: any) {
+        return console.error(e.message);
+    }
+}
+
+async function deleteMember(id: number) {
+    try {
+        return prisma.member.delete({
+            where: {
+                id: id,
+            },
+        });
     } catch(e: any) {
         return console.error(e.message);
     }

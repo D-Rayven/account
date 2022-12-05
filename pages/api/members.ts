@@ -10,6 +10,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
             return getMembers();
         case "POST":
             return createMember();
+        case "DELETE":
+            return deleteMember();
         default:
             return res.status(405).end('Method ${req.method} Not Allowed');
     }
@@ -21,6 +23,11 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
     async function createMember() {
         const member = await memberHelper.createMember(req.body.email, req.body.firstName, req.body.lastName, req.body.password);
+        return res.json(member);
+    }
+
+    async function deleteMember() {
+        const member = await memberHelper.deleteMember(Number(req.query.id));
         return res.json(member);
     }
 }

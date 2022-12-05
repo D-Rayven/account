@@ -44,29 +44,29 @@ enum "TypeOperationsStatus" as typeoperationsstatus {
     + pending
 }
 
-class "User" as user {
+class "Member" as member {
     + id: uuid
-    + last_name: string
-    + first_name: string
-    + mail: email
+    + lastName: string
+    + firstName: string
+    + email: email
     + password: password
-    + created_at: datetime
-    + updated_at: datetime
+    + createdAt: datetime
+    + updatedAt: datetime
 }
 
 class "Operations" as operations {
     + id: uuid
+    + label: string
+    + createdAt: datetime
+    + updatedAt: datetime
     + amount: float
     + date: datetime
-    + created_at: datetime
-    + updated_at: datetime
-    + type_of: TypeOperations
+    + typeOf: TypeOperations
     + status: TypeOperationsStatus
-    + account: uuid
-    + label: string
     + reccurent: boolean
     + end_date?: datetime
-    + user: uuid
+    + accountId: uuid
+    + memberId: uuid
 }
 
 class "Account" as account {
@@ -77,16 +77,16 @@ class "Account" as account {
     + color: hex
 }
 
-class "UserAccount" as useraccount {
+class "MemberAccount" as memberaccount {
     + account: uuid
-    + user: uuid
+    + member: uuid
 }
 
 account <-- operations: " account"
-user <- operations: " user"
+member <- operations: " member"
 typeoperations <-- operations
 typeoperationsstatus <-- operations
-account <--- useraccount: "account"
-user <--- useraccount: "user"
+account <--- memberaccount: "account"
+member <--- memberaccount: "member"
 @enduml
 ```
